@@ -1,12 +1,19 @@
 <?php
 /*
-Plugin Name: Slack WP Courseware Notifications
-Plugin URI: http://andrewrminion.com/2016/02/slack-wp-courseware-notifications/
-Description: Adds Slack notifications for WP Courseware events
-Version: 1.0
-Author: AndrewRMinion Design
-Author URI: https://andrewrminion.com
-*/
+ * Plugin Name: Slack WP Courseware Notifications
+ * Version: 1.0.0
+ * Description: Send notifications to Slack channels whenever a user completes a unit, module, or course.
+ * Author: AndrewRMinion Design
+ * Author URI: https://andrewrminion.com
+ * Plugin URI: http://andrewrminion.com/2016/02/slack-wp-courseware-notifications/
+ * License: GPL2
+ * GitHub Plugin URI: https://github.com/macbookandrew/slack-wp-courseware-notifications
+ */
+
+/* prevent this file from being accessed directly */
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 // add callback for WP Courseware quizzes
 function wp_slack_wp_courseware_quizzes( $events ) {
