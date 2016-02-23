@@ -15,9 +15,9 @@ function wp_slack_wp_courseware_quizzes( $events ) {
         'action' => 'wpcw_user_completed_unit',
         'description' => __( 'When a user completes a unit', 'slack' ),
         'message' => function( $user_id, $post_id, $unit_object ) {
-            $user = get_user_by( 'ID', $user_id );
 
             // get user name
+            $user = get_user_by( 'ID', $user_id );
             if ( $user->first_name && $user->last_name ) {
                 $user_name = $user->first_name . ' ' . $user->last_name;
             } else {
@@ -38,9 +38,9 @@ function wp_slack_wp_courseware_quizzes( $events ) {
         'action' => 'wpcw_user_completed_module',
         'description' => __( 'When a user completes a module', 'slack' ),
         'message' => function( $user_id, $post_id, $unit_object ) {
-            $user = get_user_by( 'ID', $user_id );
 
             // get user name
+            $user = get_user_by( 'ID', $user_id );
             if ( $user->first_name && $user->last_name ) {
                 $user_name = $user->first_name . ' ' . $user->last_name;
             } else {
@@ -61,9 +61,9 @@ function wp_slack_wp_courseware_quizzes( $events ) {
         'action' => 'wpcw_user_completed_course',
         'description' => __( 'When a user completes a course', 'slack' ),
         'message' => function( $user_id, $post_id, $unit_object ) {
-            $user = get_user_by( 'ID', $user_id );
 
             // get user name
+            $user = get_user_by( 'ID', $user_id );
             if ( $user->first_name && $user->last_name ) {
                 $user_name = $user->first_name . ' ' . $user->last_name;
             } else {
@@ -84,9 +84,8 @@ function wp_slack_wp_courseware_quizzes( $events ) {
 add_filter( 'slack_get_events', 'wp_slack_wp_courseware_quizzes' );
 
 // get parent info
-function wp_slack_wp_courseware_module_info($post_id) {
+function wp_slack_wp_courseware_module_info( $post_id ) {
     global $wpdb;
-    $wpdb->show_errors();
 
     $SQL = $wpdb->prepare(
         'SELECT *
@@ -97,5 +96,5 @@ function wp_slack_wp_courseware_module_info($post_id) {
         $post_id
     );
 
-    return $wpdb->get_row($SQL);
+    return $wpdb->get_row( $SQL );
 }
