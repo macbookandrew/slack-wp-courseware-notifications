@@ -15,9 +15,9 @@ function wp_slack_wp_courseware_quizzes( $events ) {
         'action' => 'wpcw_user_completed_unit',
         'description' => __( 'When a user completes a unit', 'slack' ),
         'message' => function( $user_id, $post_id, $unit_object ) {
-            $user = get_user_by( 'ID', $user_id );
 
             // get user name
+            $user = get_user_by( 'ID', $user_id );
             if ( $user->first_name && $user->last_name ) {
                 $user_name = $user->first_name . ' ' . $user->last_name;
             } else {
@@ -38,9 +38,9 @@ function wp_slack_wp_courseware_quizzes( $events ) {
         'action' => 'wpcw_user_completed_module',
         'description' => __( 'When a user completes a module', 'slack' ),
         'message' => function( $user_id, $post_id, $unit_object ) {
-            $user = get_user_by( 'ID', $user_id );
 
             // get user name
+            $user = get_user_by( 'ID', $user_id );
             if ( $user->first_name && $user->last_name ) {
                 $user_name = $user->first_name . ' ' . $user->last_name;
             } else {
@@ -61,21 +61,42 @@ function wp_slack_wp_courseware_quizzes( $events ) {
         'action' => 'wpcw_user_completed_course',
         'description' => __( 'When a user completes a course', 'slack' ),
         'message' => function( $user_id, $post_id, $unit_object ) {
-            $user = get_user_by( 'ID', $user_id );
+            $quiz_string = NULL;
 
             // get user name
+            $user = get_user_by( 'ID', $user_id );
             if ( $user->first_name && $user->last_name ) {
                 $user_name = $user->first_name . ' ' . $user->last_name;
             } else {
                 $user_name = $user->data->user_nicename;
             }
 
-            return sprintf(
-                'Course completed by *%1$s*: <%2$s|%3$s>',
+            // output user info
+            $quiz_string = sprintf(
+                'Course completed by *%1$s*: <%2$s|%3$s>' . "\n",
                 $user_name,
                 get_permalink( $post_id ),
                 wp_slack_wp_courseware_module_info( $post_id )->course_title
             );
+
+            // get quiz info
+            $quiz_answers = maybe_unserialize( get_quiz_responses( $post_id, $user_id )->quiz_data );
+            foreach ( $quiz_answers as $answer ) {
+                $quiz_string .= sprintf(
+                    '*%1$s* ' . "\n" . '>%2$s' . "\n",
+                    $answer['title'],
+                    str_replace( '&#13;&#10;', "\n" . '>', $answer['their_answer'] )
+                );
+            }
+
+            $quiz_string .= sprintf(
+                '<mailto:%1$s?subject=%2$s course on %3$s|Reply via email>',
+                $user->user_email,
+                wp_slack_wp_courseware_module_info( $post_id )->course_title,
+                get_bloginfo( 'name' )
+            );
+
+            return $quiz_string;
         }
     );
 
@@ -84,9 +105,8 @@ function wp_slack_wp_courseware_quizzes( $events ) {
 add_filter( 'slack_get_events', 'wp_slack_wp_courseware_quizzes' );
 
 // get parent info
-function wp_slack_wp_courseware_module_info($post_id) {
+function wp_slack_wp_courseware_module_info( $post_id ) {
     global $wpdb;
-    $wpdb->show_errors();
 
     $SQL = $wpdb->prepare(
         'SELECT *
@@ -97,5 +117,21 @@ function wp_slack_wp_courseware_module_info($post_id) {
         $post_id
     );
 
-    return $wpdb->get_row($SQL);
+    return $wpdb->get_row( $SQL );
+}
+
+// get quiz responses
+function get_quiz_responses( $post_id, $user_id ) {
+    global $wpdb;
+
+    $SQL = $wpdb->prepare(
+        'SELECT *
+        FROM ' . $wpdb->prefix . 'wpcw_user_progress_quizzes quiz
+        WHERE quiz.user_id = %d
+        AND unit_id = %d',
+        $user_id,
+        $post_id
+    );
+
+    return $wpdb->get_row( $SQL );
 }
