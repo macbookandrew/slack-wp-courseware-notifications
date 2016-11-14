@@ -10,9 +10,11 @@
 
 Send notifications to Slack channels whenever a user completes a unit, module, or course.
 
+Download the latest version from [GitHub](https://github.com/macbookandrew/slack-wp-courseware-notifications/releases).
+
 ## Description ##
 
-This plugin is an extension to the [Slack plugin](http://wordpress.org/plugins/slack); it allows you to send notifications to Slack channels whenever a user completes a unit, module, or course..
+This plugin is an extension to the [Slack plugin](http://wordpress.org/plugins/slack); it allows you to send notifications to Slack channels whenever a user completes a unit, module, or course.
 
 The new event will be shown in the integration settings. If checked, then notifications will be delivered when a user completes units, modules, or courses.
 
