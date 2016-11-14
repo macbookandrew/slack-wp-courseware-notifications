@@ -1,4 +1,4 @@
-=== Slack WP Courseware Notifictaions ===
+=== Slack WP Courseware Notifications ===
 Contributors:      macbookandrew
 Donate link:       https://cash.me/$AndrewRMinionDesign
 Tags:              slack, api, chat, notification, WP Courseware
